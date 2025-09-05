@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15432/concert   # 호스트:포트/DB명
+    username: user
+    password: pass
+    driver-class-name: org.postgresql.Driver
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: order-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+  jpa:
+    hibernate:
+      ddl-auto: create   # 개발용 → create, update, validate, none 중 선택 가능
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: "" # 비밀번호 설정하기
+
+jwt:
+  secret: "c8f5e56a3a774f6a9c30b0dce3d3e22e4e34bbd94b6e7df2a94492c87127c8e5" # 예시용 256비트 시크릿 키
+  #access-expiration: 1800000     # 30분 (ms)
+  access-expiration: 5000     # 5초 테스트용 (ms)
+  refresh-expiration: 1209600000 # 14일 (ms)
