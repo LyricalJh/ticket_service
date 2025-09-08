@@ -1,4 +1,4 @@
-package com.example.concert.service;
+package com.example.concert.producer;
 
 import com.example.concert.web.dto.OrderEvent;
 import lombok.RequiredArgsConstructor;

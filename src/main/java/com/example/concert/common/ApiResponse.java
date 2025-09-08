@@ -18,6 +18,10 @@ public class ApiResponse <T> {
         return new ApiResponse<>(data, message, HttpStatus.OK);
     }
 
+    public static <T> ApiResponse<T> ok(String message) {
+        return new ApiResponse<>(null, message, HttpStatus.OK);
+    }
+
     public static <T> ApiResponse<T> error(T data, String message) {
         return new ApiResponse<>(data, message,HttpStatus.BAD_REQUEST);
     }

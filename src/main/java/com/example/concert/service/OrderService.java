@@ -9,6 +9,7 @@ import com.example.concert.domain.order.Order;
 import com.example.concert.domain.order.OrderItem;
 import com.example.concert.domain.order.OrderRepository;
 import com.example.concert.domain.user.User;
+import com.example.concert.producer.OrderProducer;
 import com.example.concert.service.policy.SeatPricingPolicy;
 import com.example.concert.web.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;

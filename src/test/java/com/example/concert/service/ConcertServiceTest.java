@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,12 +99,17 @@ class ConcertServiceTest {
                 .closeAt(afterMonth)
                 .build();
 
-        concertService.saveConcert(request1);
-        concertService.saveConcert(request2);
-        concertService.saveConcert(request3);
+        Long l = concertService.saveConcert(request1);
+        Long l1 = concertService.saveConcert(request2);
+        Long l2 = concertService.saveConcert(request3);
+
+        List<Long> concertIds = new ArrayList<>();
+        concertIds.add(l);
+        concertIds.add(l1);
+        concertIds.add(l2);
 
         //when
-        List<ConcertResponseDto> concerts = concertService.getConcerts();
+        List<ConcertResponseDto> concerts = concertService.getConcerts(concertIds);
 
         //then
         assertThat(concerts.size()).isEqualTo(3);

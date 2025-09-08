@@ -17,6 +17,18 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-app-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   jpa:
     hibernate:
       ddl-auto: create   # 개발용 → create, update, validate, none 중 선택 가능

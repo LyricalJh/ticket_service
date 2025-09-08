@@ -1,7 +1,6 @@
 package com.example.concert.web.mapper;
 
 import com.example.concert.domain.order.Order;
-import com.example.concert.domain.order.OrderStatus;
 import com.example.concert.domain.user.User;
 import com.example.concert.web.dto.OrderEvent;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,8 @@ public class OrderMapper {
         return OrderEvent.builder()
                 .orderId(order.getId())
                 .userId(order.getUser().getId())
+                .userName(order.getUser().getName())
+                .userEmail(order.getUser().getEmail())
                 .paymentMethod(order.getPaymentMethod())
                 .pgTransactionId(order.getPgTransactionId())
                 .totalAmount(order.getTotalAmount())

@@ -8,12 +8,14 @@ import com.example.concert.web.mapper.UserMapper;
 import com.example.concert.web.dto.UserDto;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class UserService {
 
@@ -52,4 +54,5 @@ public class UserService {
 
         return new UserDto.TokenResponse(newAccessToken, newRefreshToken);
     }
+
 }

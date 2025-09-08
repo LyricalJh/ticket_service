@@ -5,6 +5,7 @@ import com.example.concert.domain.order.Order;
 import com.example.concert.domain.user.User;
 import com.example.concert.domain.user.UserRepository;
 import com.example.concert.domain.user.UserRole;
+import com.example.concert.producer.OrderProducer;
 import com.example.concert.web.mapper.OrderMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -23,6 +23,18 @@ public class ConcertMapper {
                 .build();
     }
 
+    public static Concert ConcertUpdateToEntity(ConcertDto.UpdateConcertRequest request) {
+        return Concert.builder()
+                .title(request.getTitle())
+                .date(request.getDate())
+                .venue(request.getVenue())
+                .basePrice(request.getBasePrice())
+                .status(request.getStatus())
+                .openAt(request.getOpenAt())
+                .closeAt(request.getCloseAt())
+                .build();
+    }
+
     public static ConcertResponseDto toConcertResponseDto(Concert concert) {
         return ConcertResponseDto.builder()
                 .concertId(concert.getConcertId())
