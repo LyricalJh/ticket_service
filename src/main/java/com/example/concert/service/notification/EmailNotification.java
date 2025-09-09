@@ -21,4 +21,5 @@ public class EmailNotification implements NotificationSender {
         mail.setText(event.getUserEmail() + " 메일에 결재 성공 완료했습니다." );
         mailSender.send(mail);
     }
+
 }

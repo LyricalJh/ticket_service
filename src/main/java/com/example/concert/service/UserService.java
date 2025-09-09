@@ -1,6 +1,7 @@
 package com.example.concert.service;
 
 import com.example.concert.cache.TokenCacheService;
+import com.example.concert.cache.UserCacheService;
 import com.example.concert.common.JwtUtil;
 import com.example.concert.domain.user.User;
 import com.example.concert.domain.user.UserRepository;
@@ -13,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,6 +26,7 @@ public class UserService {
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
     private final TokenCacheService tokenCacheService;
+    private final UserCacheService userCacheService;
 
     @Transactional
     public void userRegistered(UserDto.CreateUserRequest request) {
@@ -36,6 +40,17 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public User getUserByEmail(String email) {
+        User cachedUser = userCacheService.getUser(email);
+        if (cachedUser != null) {
+            return cachedUser;
+        }
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+    }
+
 
     public UserDto.TokenResponse getTokens(String refreshToken) throws JwtException {
 

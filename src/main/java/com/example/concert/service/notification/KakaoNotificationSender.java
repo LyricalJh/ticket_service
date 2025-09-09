@@ -12,4 +12,8 @@ public class KakaoNotificationSender implements NotificationSender {
     public void sendNotification(PaymentEvent event, String status) {
         log.info("카카오 알림톡 발송 {} ", event.getOrderId());
     }
+
+    public void sendNotification(String message) {
+        log.info("카카오 알림톡 발송 [메시지] : {}", message);
+    }
 }

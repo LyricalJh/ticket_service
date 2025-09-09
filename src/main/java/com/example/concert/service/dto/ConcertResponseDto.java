@@ -27,4 +27,5 @@ public class ConcertResponseDto {
     // 좌석 목록도 같이 내려줄 경우
     @Builder.Default
     private List<SeatResponseDto> seats = new ArrayList<>();
+
 }

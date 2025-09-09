@@ -39,6 +39,18 @@ public class CustomUserDetails implements UserDetails {
         return user.getEmail();
     }
 
+    public String getPhoneNumber() {
+        return user.getPhoneNumber();
+    }
+
+    public String getRole() {
+        return user.getRole().getCode();
+    }
+
+    public Long getUserId() {
+        return user.getId();
+    }
+
     // 추가적으로 추가할 수 있는 검증 로직들
     @Override
     public boolean isAccountNonExpired() {

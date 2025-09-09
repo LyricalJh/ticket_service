@@ -5,8 +5,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -34,10 +32,8 @@ public class ReservationCacheService {
         return redisTemplate.opsForValue().get(SEAT_LOCK_PREFIX + seatId);
     }
 
-    public boolean areSeatsOccupied(List<Long> seatIds) {
-        return seatIds.stream()
-                .map(id -> redisTemplate.opsForValue().get(SEAT_LOCK_PREFIX + id))
-                .anyMatch(Objects::nonNull);
+    public boolean isSeatOccupied(Long seatId) {
+        return redisTemplate.opsForValue().get(SEAT_LOCK_PREFIX + seatId) != null;
     }
 
     public void removeOccupySeat(Long seatId) {

@@ -55,6 +55,10 @@ public class ConcertService {
         return ConcertMapper.toConcertResponses(concertRepository.findAllById(concertIds));
     }
 
+    public List<ConcertResponseDto> getAllConcerts() {
+        return ConcertMapper.toConcertResponses(concertRepository.findAll());
+    }
+
     @Transactional
     public void deleteConcert(Long concertId) {
 
