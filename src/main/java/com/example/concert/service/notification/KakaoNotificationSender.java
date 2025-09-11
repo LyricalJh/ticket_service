@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class KakaoNotificationSender implements NotificationSender {
 
     @Override
-    public void sendNotification(PaymentEvent event, String status) {
+    public void sendNotification(PaymentEvent event) {
         log.info("카카오 알림톡 발송 {} ", event.getOrderId());
     }
 

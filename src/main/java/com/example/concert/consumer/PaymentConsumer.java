@@ -16,6 +16,6 @@ public class PaymentConsumer {
 
     @KafkaListener(topics = "payments", groupId = "notification-service")
     public void consumeConfirmations(PaymentEvent event) {
-        senders.forEach(m -> m.sendNotification(event, "SUCCESS"));
+        senders.forEach(m -> m.sendNotification(event));
     }
 }

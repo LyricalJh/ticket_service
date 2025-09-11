@@ -1,6 +1,8 @@
 package com.example.concert.service;
 
+import com.example.concert.domain.concert.Seat;
 import com.example.concert.domain.concert.SeatRepository;
+import com.example.concert.domain.concert.SeatStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,9 @@ public class SeatService {
         return 0L;
     }
 
-
+    public void updateSeatStatus(Long seatId, SeatStatus status) {
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new IllegalArgumentException("좌석 없음"));
+        seat.changeStatus(status);
+    }
 }

@@ -10,6 +10,8 @@ public class ConcertApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ConcertApplication.class, args);
+
+        // TODO 초기 데이터 셋팅
     }
 
 }

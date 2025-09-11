@@ -17,14 +17,13 @@ public class PaymentProducer {
 
     private final static String PAYMENT_TOPIC = "payments";
 
-
     @Retryable(
             value = {Exception.class},      // 어떤 예외에서 재시도할지
             maxAttempts = 3,                  // 최대 재시도 횟수
             backoff = @Backoff(delay = 2000)  // 재시도 간격 (2초)
     )
-    public void sendNotification(OrderEvent event, String status) {
-        PaymentEvent paymentEvent = PaymentMapper.orderToPaymentEvent(event, status);
+    public void send(OrderEvent event) {
+        PaymentEvent paymentEvent = PaymentMapper.orderToPaymentEvent(event);
         kafkaTemplate.send(PAYMENT_TOPIC, paymentEvent)
                 .whenComplete((result, ex) -> {
                     if (ex != null) {

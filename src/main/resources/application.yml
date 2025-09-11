@@ -6,22 +6,26 @@ spring:
     driver-class-name: org.postgresql.Driver
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:29092   # 호스트에서 실행할 때 Kafka 접근 주소
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      group-id: order-service
+      group-id: concert-service
+      auto-offset-reset: earliest   # (dev 편의) 토픽 처음부터 읽기
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+    listener:
+      ack-mode: record
+      auto-startup: true   # 필요 시 false 로 두고 수동 컨트롤 가능
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your-email@gmail.com
-    password: your-app-password
+    username: sojunghan49@gmail.com
+    password: tysiab43@@
     properties:
       mail:
         smtp:
@@ -43,8 +47,23 @@ spring:
       port: 6379
       password: "" # 비밀번호 설정하기
 
+  application:
+    name: concert-app   # 메트릭 태그에도 쓰임
+
 jwt:
   secret: "c8f5e56a3a774f6a9c30b0dce3d3e22e4e34bbd94b6e7df2a94492c87127c8e5" # 예시용 256비트 시크릿 키
   #access-expiration: 1800000     # 30분 (ms)
-  access-expiration: 5000     # 5초 테스트용 (ms)
-  refresh-expiration: 1209600000 # 14일 (ms)
+  access-expiration: 5000         # 5초 테스트용 (ms)
+  refresh-expiration: 1209600000  # 14일 (ms)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus   # prometheus endpoint 노출
+  endpoint:
+    health:
+      show-details: always            # health 상세정보 노출
+  metrics:
+    tags:
+      application: concert-app        # 메트릭에 app 태그 붙이기 (구분용)

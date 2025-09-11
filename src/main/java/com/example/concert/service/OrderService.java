@@ -1,10 +1,7 @@
 package com.example.concert.service;
 
 import com.example.concert.cache.ReservationCacheService;
-import com.example.concert.domain.concert.Concert;
-import com.example.concert.domain.concert.ConcertRepository;
-import com.example.concert.domain.concert.Seat;
-import com.example.concert.domain.concert.SeatRepository;
+import com.example.concert.domain.concert.*;
 import com.example.concert.domain.order.Order;
 import com.example.concert.domain.order.OrderItem;
 import com.example.concert.domain.order.OrderRepository;
@@ -38,6 +35,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     private final EnterQueueService enterQueueService;
+    private final SeatService seatService;
 
     @Transactional
     public Order createOrder(User user, Long concertId, List<Long> seatIds) {
@@ -76,7 +74,10 @@ public class OrderService {
 
         // 6. 주문 생성 + 이벤트 발행
         Order order = Order.CreateOrder(user, orderItems);
-        orderProducer.sendOrderEvent(OrderMapper.createOrderEvent(order));
+        orderProducer.send(OrderMapper.createOrderEvent(order));
+
+        //TODO SEAT 좌석 상태값을 강한 일관성으로 바로 UPDATE 될것임
+        seats.forEach((seat) -> seatService.updateSeatStatus(seat.getId(), SeatStatus.HOLD));
 
         return orderRepository.save(order);
     }

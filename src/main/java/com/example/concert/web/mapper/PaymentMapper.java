@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class PaymentMapper {
 
     // Order -> Payment
-    public static PaymentEvent orderToPaymentEvent(OrderEvent event, String status) {
+    public static PaymentEvent orderToPaymentEvent(OrderEvent event) {
         return PaymentEvent.builder()
                 .orderId(event.getOrderId())
                 .totalAmount(event.getTotalAmount())
@@ -16,7 +16,6 @@ public class PaymentMapper {
                 .userName(event.getUserName())
                 .userEmail(event.getUserEmail())
                 .userId(event.getUserId())
-                .paymentStatus(status)
                 .build();
     }
 }

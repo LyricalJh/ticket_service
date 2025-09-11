@@ -27,6 +27,4 @@ public class ReservationController {
         reservationService.makeReservation(UserMapper.UserCreateRequestToEntity(userDetails), concertId);
         return ApiResponse.ok("성공적으로 대기열에 등록했습니다.");
     }
-
-
 }

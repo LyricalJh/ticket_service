@@ -42,7 +42,7 @@ public class ConcertMapper {
                 .date(concert.getDate())
                 .venue(concert.getVenue())
                 .basePrice(concert.getBasePrice())
-                .status(concert.getStatus().name())
+                .status(concert.getStatus())
                 .openAt(concert.getOpenAt())
                 .closeAt(concert.getCloseAt())
                 .seats(concert.getSeats().stream()

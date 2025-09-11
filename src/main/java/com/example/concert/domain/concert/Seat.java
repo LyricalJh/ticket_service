@@ -32,4 +32,8 @@ public class Seat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "concert_id", nullable = false)
     private Concert concert;
+
+    public void changeStatus(SeatStatus status) {
+        this.status = status;
+    }
 }

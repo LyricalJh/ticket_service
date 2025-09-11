@@ -1,5 +1,6 @@
 package com.example.concert.service.dto;
 
+import com.example.concert.domain.concert.ConcertStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class ConcertResponseDto {
     private LocalDateTime date;
     private String venue;
     private BigDecimal basePrice;
-    private String status;
+    private ConcertStatus status;
 
     private LocalDateTime openAt;
     private LocalDateTime closeAt;

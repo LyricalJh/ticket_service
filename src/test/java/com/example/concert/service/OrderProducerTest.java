@@ -1,11 +1,13 @@
 package com.example.concert.service;
 
+import com.example.concert.batch.QueueScheduler;
 import com.example.concert.domain.concert.*;
 import com.example.concert.domain.order.Order;
 import com.example.concert.domain.user.User;
 import com.example.concert.domain.user.UserRepository;
 import com.example.concert.domain.user.UserRole;
 import com.example.concert.producer.OrderProducer;
+import com.example.concert.queue.EnterQueueService;
 import com.example.concert.web.mapper.OrderMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +36,15 @@ class OrderProducerTest {
 
     @Autowired
     private SeatRepository seatRepository;
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    EnterQueueService enterQueueService;
+
+    @Autowired
+    QueueScheduler scheduler;
 
     @Test
     @DisplayName("좌석을 예매하고 주문을 합니다.")
@@ -93,7 +102,10 @@ class OrderProducerTest {
         List<Seat> seats = seatRepository.saveAll(Arrays.asList(seat1, seat2, seat3));
         List<Long> seatIds = seats.stream().map(Seat::getId).toList();
 
+        enterQueueService.enterQueue(targetConcert.getConcertId(), user.getId());
+
         // when
+        scheduler.process();
         Order order = orderService.createOrder(targetUser, targetConcert.getConcertId(), seatIds);
 
         // then
@@ -101,7 +113,7 @@ class OrderProducerTest {
         assertNotNull(order);
         assertEquals(3, order.getOrderItems().size());
         assertThat(order.getTotalAmount().compareTo(BigDecimal.valueOf(650_000))).isZero();
-        orderProducer.sendOrderEvent(OrderMapper.createOrderEvent(order));
+        orderProducer.send(OrderMapper.createOrderEvent(order));
     }
 
 }

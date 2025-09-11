@@ -13,7 +13,7 @@ public class EmailNotification implements NotificationSender {
     private final JavaMailSender mailSender;
 
     @Override
-    public void sendNotification(PaymentEvent event, String status) {
+    public void sendNotification(PaymentEvent event) {
 
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(event.getUserEmail());
