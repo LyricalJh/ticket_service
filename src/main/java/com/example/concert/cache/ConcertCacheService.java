@@ -14,7 +14,7 @@ import java.time.Duration;
 @Slf4j
 public class ConcertCacheService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> objectRedisTemplate;
 
     private static final String CONCERT_PREFIX = "concert:";
 
@@ -25,14 +25,14 @@ public class ConcertCacheService {
     // 캐시 저장
     public void putConcert(ConcertResponseDto concert, Duration ttl) {
         String key = getKey(concert.getConcertId());
-        redisTemplate.opsForValue().set(key, concert, ttl);
+        objectRedisTemplate.opsForValue().set(key, concert, ttl);
         log.info("Concert 캐싱 완료: {}", key);
     }
 
     // 캐시 조회
     public ConcertResponseDto getConcert(Long concertId) {
         String key = getKey(concertId);
-        Object cached = redisTemplate.opsForValue().get(key);
+        Object cached = objectRedisTemplate.opsForValue().get(key);
         if (cached instanceof ConcertResponseDto dto) {
             return dto;
         }
@@ -42,8 +42,10 @@ public class ConcertCacheService {
     // 캐시 삭제
     public void evictConcert(Long concertId) {
         String key = getKey(concertId);
-        redisTemplate.delete(key);
+        objectRedisTemplate.delete(key);
         log.info("Concert 캐시 삭제: {}", key);
     }
+
+
 }
 

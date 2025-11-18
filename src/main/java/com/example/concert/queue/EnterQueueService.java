@@ -11,7 +11,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class EnterQueueService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> objectRedisTemplate;
 
     private String queueKey(Long concertId) {
         return "concert:" + concertId + ":queue";
@@ -23,33 +23,33 @@ public class EnterQueueService {
 
     // 대기열 등록
     public void enterQueue(Long concertId, Long userId) {
-        redisTemplate.opsForZSet().add(queueKey(concertId), userId, System.currentTimeMillis());
+        objectRedisTemplate.opsForZSet().add(queueKey(concertId), userId, System.currentTimeMillis());
     }
 
     // 순번 조회 실시간 조회는 사용하지 않고
     public Long getQueuePosition(Long concertId, Long userId) {
-        Long rank = redisTemplate.opsForZSet().rank(queueKey(concertId), userId);
+        Long rank = objectRedisTemplate.opsForZSet().rank(queueKey(concertId), userId);
         return rank != null ? rank + 1 : null;
     }
 
     // N명 입장 허용
     public List<Long> allowUserToEnterQueue(Long concertId, int batchSize) {
-        Set<Object> users = redisTemplate.opsForZSet().range(queueKey(concertId), 0, batchSize - 1);
+        Set<Object> users = objectRedisTemplate.opsForZSet().range(queueKey(concertId), 0, batchSize - 1);
 
         if (users == null || users.isEmpty()) {
             return List.of();
         }
 
         for (Object user : users) {
-            redisTemplate.opsForSet().add(activeKey(concertId), user);
-            redisTemplate.opsForZSet().remove(queueKey(concertId), user);
+            objectRedisTemplate.opsForSet().add(activeKey(concertId), user);
+            objectRedisTemplate.opsForZSet().remove(queueKey(concertId), user);
         }
 
         return users.stream().map(u -> Long.valueOf(u.toString())).toList();
     }
 
     public void validUserAccess(Long concertId, Long userId) {
-        Boolean isActive = redisTemplate.opsForSet().isMember(activeKey(concertId), userId);
+        Boolean isActive = objectRedisTemplate.opsForSet().isMember(activeKey(concertId), userId);
 
         if (!Boolean.TRUE.equals(isActive)) {
             throw new IllegalStateException("대기열에 있는 유저만 예매할 수 있습니다.");
@@ -57,11 +57,11 @@ public class EnterQueueService {
     }
 
     public boolean isInQueue(Long concertId, Long userId) {
-        return redisTemplate.opsForZSet().rank(queueKey(concertId), userId) != null;
+        return objectRedisTemplate.opsForZSet().rank(queueKey(concertId), userId) != null;
     }
 
     public boolean isInActiveUsers(Long concertId, Long userId) {
-        return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(activeKey(concertId), userId));
+        return Boolean.TRUE.equals(objectRedisTemplate.opsForSet().isMember(activeKey(concertId), userId));
     }
 }
 

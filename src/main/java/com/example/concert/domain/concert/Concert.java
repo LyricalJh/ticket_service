@@ -1,5 +1,6 @@
 package com.example.concert.domain.concert;
 
+import com.example.concert.domain.seat.Seat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,7 +36,7 @@ public class Concert {
     @Column(name = "venue")
     private String venue;
 
-    @Column(name = "base_price", scale = 2)
+    @Column(name = "base_price", precision = 12, scale = 2)
     private BigDecimal basePrice;
 
     @Enumerated(value = EnumType.STRING)

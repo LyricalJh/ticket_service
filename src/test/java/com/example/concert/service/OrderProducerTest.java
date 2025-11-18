@@ -3,11 +3,17 @@ package com.example.concert.service;
 import com.example.concert.batch.QueueScheduler;
 import com.example.concert.domain.concert.*;
 import com.example.concert.domain.order.Order;
+import com.example.concert.domain.order.OrderItem;
+import com.example.concert.domain.order.OrderItemRepository;
+import com.example.concert.domain.order.OrderRepository;
+import com.example.concert.domain.seat.Seat;
+import com.example.concert.domain.seat.SeatRepository;
 import com.example.concert.domain.user.User;
 import com.example.concert.domain.user.UserRepository;
 import com.example.concert.domain.user.UserRole;
 import com.example.concert.producer.OrderProducer;
 import com.example.concert.queue.EnterQueueService;
+import com.example.concert.service.policy.DefaultSeatPricingPolicy;
 import com.example.concert.web.mapper.OrderMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,6 +51,10 @@ class OrderProducerTest {
 
     @Autowired
     QueueScheduler scheduler;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Test
     @DisplayName("좌석을 예매하고 주문을 합니다.")
@@ -107,6 +117,8 @@ class OrderProducerTest {
         // when
         scheduler.process();
         Order order = orderService.createOrder(targetUser, targetConcert.getConcertId(), seatIds);
+        List<OrderItem> orderItems = OrderItem.createAll(order, concert, new DefaultSeatPricingPolicy(), seats);
+        orderItemRepository.saveAll(orderItems);
 
         // then
         System.out.println("총 주문 금액: " + order.getTotalAmount());

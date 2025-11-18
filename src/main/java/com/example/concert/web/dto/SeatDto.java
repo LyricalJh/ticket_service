@@ -1,6 +1,6 @@
 package com.example.concert.web.dto;
 
-import com.example.concert.domain.concert.SeatStatus;
+import com.example.concert.domain.seat.SeatStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.example.concert.domain.order;
 
 import com.example.concert.domain.concert.Concert;
-import com.example.concert.domain.concert.Seat;
+import com.example.concert.domain.seat.Seat;
 import com.example.concert.service.policy.SeatPricingPolicy;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,15 +38,16 @@ public class OrderItem {
         this.order = order;
     }
 
-    public static OrderItem create(Concert concert, Seat seat, SeatPricingPolicy policy) {
+    public static OrderItem create(Order order, Concert concert, Seat seat, SeatPricingPolicy policy) {
         return OrderItem.builder()
                 .seat(seat)
+                .order(order)
                 .price(policy.calculatePrice(concert, seat))
                 .build();
     }
 
-    public static List<OrderItem> createAll(Concert concert, SeatPricingPolicy policy, List<Seat> seats) {
-        return seats.stream().map(seat -> create(concert, seat, policy)).collect(Collectors.toList());
+    public static List<OrderItem> createAll(Order order, Concert concert, SeatPricingPolicy policy, List<Seat> seats) {
+        return seats.stream().map(seat -> create(order, concert, seat, policy)).collect(Collectors.toList());
     }
 
 }

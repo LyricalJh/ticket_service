@@ -2,8 +2,10 @@ package com.example.concert.cache;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -11,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
-@Service
 @RequiredArgsConstructor
+@Service
 @Slf4j
 public class TokenCacheService {
 
@@ -21,7 +23,8 @@ public class TokenCacheService {
     @Value("${jwt.refresh-expiration}") // ms 단위
     private long refreshExpirationMs;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
+
 
     /**
      * Refresh Token 저장 (key: RT:username, value: token)
@@ -32,7 +35,7 @@ public class TokenCacheService {
             backoff = @Backoff(delay = 200, multiplier = 2) // 200ms → 400ms → 800ms
     )
     public void saveToken(String email, String token) {
-        redisTemplate.opsForValue().set(
+        stringRedisTemplate.opsForValue().set(
                 PREFIX + email,
                 token,
                 refreshExpirationMs,
@@ -51,14 +54,14 @@ public class TokenCacheService {
      * Refresh Token 조회
      */
     public String getToken(String email) {
-        return redisTemplate.opsForValue().get(PREFIX + email);
+        return stringRedisTemplate.opsForValue().get(PREFIX + email);
     }
 
     /**
      * Refresh Token 삭제 (로그아웃 시)
      */
     public void deleteToken(String username) {
-        redisTemplate.delete(PREFIX + username);
+        stringRedisTemplate.delete(PREFIX + username);
         log.info("🗑️ RefreshToken 삭제: key={}", PREFIX + username);
     }
 }

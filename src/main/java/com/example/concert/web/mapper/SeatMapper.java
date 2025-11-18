@@ -1,6 +1,6 @@
 package com.example.concert.web.mapper;
 
-import com.example.concert.domain.concert.Seat;
+import com.example.concert.domain.seat.Seat;
 import com.example.concert.service.dto.SeatResponseDto;
 import org.springframework.stereotype.Component;
 

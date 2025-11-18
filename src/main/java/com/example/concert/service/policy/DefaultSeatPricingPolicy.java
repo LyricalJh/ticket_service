@@ -2,7 +2,7 @@ package com.example.concert.service.policy;
 
 
 import com.example.concert.domain.concert.Concert;
-import com.example.concert.domain.concert.Seat;
+import com.example.concert.domain.seat.Seat;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

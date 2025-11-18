@@ -3,12 +3,14 @@ package com.example.concert.service;
 import com.example.concert.domain.concert.*;
 import com.example.concert.domain.order.Order;
 import com.example.concert.domain.order.OrderItem;
+import com.example.concert.domain.order.OrderItemRepository;
+import com.example.concert.domain.seat.Seat;
+import com.example.concert.domain.seat.SeatRepository;
 import com.example.concert.domain.user.User;
 import com.example.concert.domain.user.UserRole;
+
+import com.example.concert.queue.EnterQueueService;
 import com.example.concert.service.policy.DefaultSeatPricingPolicy;
-import com.example.concert.service.policy.SeatPricingPolicy;
-import com.example.concert.web.dto.ConcertDto;
-import com.example.concert.web.mapper.ConcertMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,12 @@ class OrderServiceTest {
 
     @Autowired
     private SeatRepository seatRepository;
+
+    @Autowired
+    EnterQueueService enterQueueService;
+
+    @Autowired
+    OrderItemRepository orderItemRepository;
 
     @Test
     @DisplayName("좌석을 예매하고 주문을 합니다.")
@@ -88,7 +96,11 @@ class OrderServiceTest {
         List<Long> seatIds = seats.stream().map(Seat::getId).toList();
 
         // when
+        enterQueueService.enterQueue(targetConcert.getConcertId(), user.getId());
+
         Order order = orderService.createOrder(user, targetConcert.getConcertId(), seatIds);
+        List<OrderItem> all = OrderItem.createAll(order, concert, new DefaultSeatPricingPolicy(), seats);
+        orderItemRepository.saveAll(all);
 
         // then
         System.out.println("총 주문 금액: " + order.getTotalAmount());

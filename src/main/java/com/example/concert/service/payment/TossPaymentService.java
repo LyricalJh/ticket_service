@@ -25,7 +25,6 @@ public class TossPaymentService implements PaymentService {
     private static final String TOSS_PAYMENTS_API = "https://api.tosspayments.com/v1/payments/confirm";
     private static final String TEST_SECRET_KEY = "test_sk_xxxxxxxxx"; // 토스 테스트 시크릿 키
 
-
     @Override
     public void pay(OrderEvent event) {
         HttpHeaders headers = new HttpHeaders();
@@ -43,7 +42,6 @@ public class TossPaymentService implements PaymentService {
 
         log.info("✅ 결제 응답: {}", response.getBody());
 
-        //TODO 결제 응답에 따라 메세지 내용 수정
         paymentProducer.send(event);
     }
 

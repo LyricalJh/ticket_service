@@ -3,6 +3,7 @@ package com.example.concert.service;
 import com.example.concert.cache.ConcertCacheService;
 import com.example.concert.domain.concert.Concert;
 import com.example.concert.domain.concert.ConcertRepository;
+import com.example.concert.domain.seat.SeatRepository;
 import com.example.concert.service.dto.ConcertResponseDto;
 import com.example.concert.web.dto.ConcertDto;
 import com.example.concert.web.mapper.ConcertMapper;
@@ -21,6 +22,7 @@ public class ConcertService {
     private final ConcertRepository concertRepository;
 
     private final ConcertCacheService concertCacheService;
+    private final SeatRepository seatRepository;
 
     @Transactional
     public Long saveConcert(ConcertDto.CreateConcertRequest request) {
@@ -73,6 +75,7 @@ public class ConcertService {
         concertCacheService.evictConcert(concertId);
     }
 
+    @Transactional
     public void updateConcert(ConcertDto.UpdateConcertRequest request) {
         //TODO dirty check 방식으로 수정하는게 더 올바름
         if (request == null) {
@@ -85,6 +88,7 @@ public class ConcertService {
 
     @Transactional
     public void deleteConcerts() {
+        seatRepository.deleteAll();
         concertRepository.deleteAll();
         //TODO  캐쉬 삭제 필요함
     }

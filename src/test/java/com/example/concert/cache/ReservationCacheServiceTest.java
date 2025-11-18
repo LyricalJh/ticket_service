@@ -2,7 +2,8 @@ package com.example.concert.cache;
 
 import com.example.concert.domain.concert.Concert;
 import com.example.concert.domain.concert.ConcertStatus;
-import com.example.concert.domain.concert.Seat;
+import com.example.concert.domain.seat.Seat;
+import com.example.concert.domain.order.Order;
 import com.example.concert.domain.order.OrderItem;
 import com.example.concert.domain.user.User;
 import com.example.concert.domain.user.UserRole;
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -31,10 +32,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ReservationCacheServiceTest {
 
     @Autowired
-    private ReservationCacheService reservationCacheService;
+    private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private ReservationCacheService reservationCacheService;
+
 
     @AfterEach
     public void tearDown() {
@@ -91,10 +93,10 @@ class ReservationCacheServiceTest {
                 .grade("S")
                 .build();
 
-
+        Order order = Order.createOrder(user);
 
         List<OrderItem> orderItems =
-                OrderItem.createAll(concert, new DefaultSeatPricingPolicy(), Arrays.asList(seat1, seat2, seat3));
+                OrderItem.createAll(order, concert, new DefaultSeatPricingPolicy(), Arrays.asList(seat1, seat2, seat3));
 
         // when & then
         orderItems.forEach(orderItem -> {

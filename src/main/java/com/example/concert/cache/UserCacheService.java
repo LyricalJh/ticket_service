@@ -1,6 +1,7 @@
 package com.example.concert.cache;
 
 import com.example.concert.domain.user.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,17 +10,19 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class UserCacheService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> objectRedisTemplate;
+
+    private final ObjectMapper objectMapper;
 
     private static final String PREFIX = "USER:";
     private static final long USER_TTL = 60 * 30; // 30분 캐시
 
     public void saveUser(User user) {
-        redisTemplate.opsForValue().set(
+        objectRedisTemplate.opsForValue().set(
                 PREFIX + user.getEmail(),
                 user,
                 USER_TTL,
@@ -28,16 +31,18 @@ public class UserCacheService {
     }
 
     public User getUser(String email) {
-        Object obj = redisTemplate.opsForValue().get(PREFIX + email);
+        Object obj = objectRedisTemplate.opsForValue().get(PREFIX + email);
+        if (obj == null) return null;
+
         if (obj instanceof User) {
             return (User) obj;
         } else {
-            log.warn("유저 객체화 실패 = {}", obj);
+            // LinkedHashMap → User 변환
+            return objectMapper.convertValue(obj, User.class);
         }
-        return null;
     }
 
     public void deleteUser(String email) {
-        redisTemplate.delete(PREFIX + email);
+        objectRedisTemplate.delete(PREFIX + email);
     }
 }

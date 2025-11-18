@@ -63,16 +63,10 @@ public class Order {
         this.status = OrderStatus.CANCELLED;
     }
 
-    public static Order CreateOrder(User user, List<OrderItem> orderItems) {
-        Order order = Order.builder()
+    public static Order createOrder(User user) {
+        return Order.builder()
                 .user(user)
-                .totalAmount(orderItems.stream()
-                        .map(OrderItem::getPrice)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add))
                 .status(OrderStatus.CREATED)
                 .build();
-
-        order.addOrderItems(orderItems);
-        return order;
     }
 }

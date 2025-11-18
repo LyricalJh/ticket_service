@@ -1,6 +1,6 @@
 package com.example.concert.web;
 
-import com.example.concert.domain.concert.SeatStatus;
+import com.example.concert.domain.seat.SeatStatus;
 import com.example.concert.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,12 @@ public class SeatController {
     @PatchMapping("/seats/{id}/status")
     public ResponseEntity<Void> updateSeatStatus(@PathVariable Long id,
                                                  @RequestParam String status) {
-        SeatStatus seatStatus = SeatStatus.valueOf(status.toUpperCase());
-
-        seatService.updateSeatStatus(id, seatStatus);
-        return ResponseEntity.ok().build();
+        try {
+            SeatStatus seatStatus = SeatStatus.valueOf(status.toUpperCase());
+            seatService.updateSeatStatus(id, seatStatus);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

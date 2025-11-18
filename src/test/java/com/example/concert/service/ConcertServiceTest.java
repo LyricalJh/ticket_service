@@ -3,7 +3,7 @@ package com.example.concert.service;
 import com.example.concert.domain.concert.Concert;
 import com.example.concert.domain.concert.ConcertRepository;
 import com.example.concert.domain.concert.ConcertStatus;
-import com.example.concert.domain.concert.Seat;
+import com.example.concert.domain.seat.Seat;
 import com.example.concert.service.dto.ConcertResponseDto;
 import com.example.concert.web.dto.ConcertDto;
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +27,7 @@ class ConcertServiceTest {
 
     @Autowired
     private ConcertService concertService;
+
     @Autowired
     private ConcertRepository concertRepository;
 
@@ -149,7 +150,8 @@ class ConcertServiceTest {
             Seat seat = Seat.builder()
                     .row("A")                  // A열
                     .seatNumber(i)             // 1 ~ 10번
-                    .grade("VIP")              // 등급
+                    .grade("VIP")
+                    .concert(concert)// 등급
                     .build();
             concert.getSeats().add(seat);       // Concert와 Seat 매핑
         }

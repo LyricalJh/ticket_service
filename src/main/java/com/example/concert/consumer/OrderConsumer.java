@@ -32,8 +32,10 @@ public class OrderConsumer {
 
         try {
             paymentService.pay(event); // 결제 서비스 안에서 PaymentProducer 호출
-            //TODO 해당 좌석 상태를 예매 상태로 변경 해야함...
+            //TODO paymentService 결과에 따라 seat 상태를 변경해야함
 
+        } catch (Exception e) {
+            log.error(e.getMessage());
         } finally {
             // 성공/실패 관계없이 좌석 점유 해제
             event.getSeatIds().forEach(reservationCacheService::removeOccupySeat);

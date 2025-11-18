@@ -3,12 +3,13 @@ package com.example.concert.service;
 import com.example.concert.cache.ReservationCacheService;
 import com.example.concert.domain.concert.*;
 import com.example.concert.domain.order.Order;
-import com.example.concert.domain.order.OrderItem;
 import com.example.concert.domain.order.OrderRepository;
+import com.example.concert.domain.seat.Seat;
+import com.example.concert.domain.seat.SeatRepository;
+import com.example.concert.domain.seat.SeatStatus;
 import com.example.concert.domain.user.User;
 import com.example.concert.producer.OrderProducer;
 import com.example.concert.queue.EnterQueueService;
-import com.example.concert.service.policy.SeatPricingPolicy;
 import com.example.concert.web.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,6 @@ public class OrderService {
     private final ConcertRepository concertRepository;
 
     private final SeatRepository seatRepository;
-
-    private final SeatPricingPolicy seatPricingPolicy;
 
     private final OrderProducer orderProducer;
 
@@ -69,11 +68,8 @@ public class OrderService {
             throw new IllegalStateException(buildOccupiedSeatMessage(occupiedSeats));
         }
 
-        // 5. 주문 아이템 생성
-        List<OrderItem> orderItems = OrderItem.createAll(concert, seatPricingPolicy, seats);
-
         // 6. 주문 생성 + 이벤트 발행
-        Order order = Order.CreateOrder(user, orderItems);
+        Order order = Order.createOrder(user);
         orderProducer.send(OrderMapper.createOrderEvent(order));
 
         //TODO SEAT 좌석 상태값을 강한 일관성으로 바로 UPDATE 될것임

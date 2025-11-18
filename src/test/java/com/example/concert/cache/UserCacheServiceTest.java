@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class UserCacheServiceTest {
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> objectRedisTemplate;
 
     @Autowired
     private UserCacheService userCacheService;
@@ -29,53 +29,54 @@ class UserCacheServiceTest {
         String value = UUID.randomUUID().toString();
 
         // when
-        redisTemplate.opsForValue().set(key, value);
-        String result = redisTemplate.opsForValue().get(key);
+        objectRedisTemplate.opsForValue().set(key, value);
+        Object result = objectRedisTemplate.opsForValue().get(key);
 
         // then
-        assertThat(result).isEqualTo(value);
+        assertThat(result).isInstanceOf(String.class);
+        assertThat((String) result).isEqualTo(value);
 
-        //clean up
-        redisTemplate.delete(key);
+        // clean up
+        objectRedisTemplate.delete(key);
     }
 
     @Test
-    @DisplayName("특정 key 값으로 값을 삭제 하면 조회 되면 안된다.")
+    @DisplayName("특정 key 값으로 값을 삭제하면 조회되면 안된다.")
     void testDeleteRedisValueWithKey() {
-
         // given
         String key = "user:test:email";
         String value = UUID.randomUUID().toString();
 
         // when
-        redisTemplate.opsForValue().set(key, value);
-        redisTemplate.delete(key);
+        objectRedisTemplate.opsForValue().set(key, value);
+        objectRedisTemplate.delete(key);
 
         // then
-        assertThat(redisTemplate.opsForValue().get(key)).isNullOrEmpty();
+        Object result = objectRedisTemplate.opsForValue().get(key);
+        assertThat(result).isNull();
     }
 
     @Test
     @DisplayName("Redis 통합 테스트 saveUser / getUser")
-    public void redisSaveAndGetUserTest() {
-        //given
+    void redisSaveAndGetUserTest() {
+        // given
         User user = User.builder()
-                       .email("test@example.com")
-                       .password("1234")
-                       .role(UserRole.USER)
-                       .build();
+                .email("test@example.com")
+                .password("1234")
+                .role(UserRole.USER)
+                .build();
 
-        //when
+        // when
         userCacheService.saveUser(user);
         User cachedUser = userCacheService.getUser(user.getEmail());
 
-        //then
+
+        // then
         assertThat(cachedUser).isNotNull();
         assertThat(cachedUser.getEmail()).isEqualTo(user.getEmail());
 
-        //clean up
+        // clean up
         userCacheService.deleteUser(cachedUser.getEmail());
         assertThat(userCacheService.getUser("test@example.com")).isNull();
     }
-
 }

@@ -35,7 +35,6 @@ public class ConcertController {
         return ApiResponse.ok("성공적으로 반영되었습니다.");
     }
 
-
     @GetMapping("/concerts")
     public ApiResponse<?> getConcerts(@RequestBody @NotEmpty List<Long> concertIds) {
         List<ConcertResponseDto> concerts = concertService.getConcerts(concertIds);
