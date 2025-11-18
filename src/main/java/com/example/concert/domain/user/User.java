@@ -25,4 +25,12 @@ public class User {
     @Builder.Default
     private UserRole role = UserRole.USER;
 
+    @Builder.Default
+    @Column(name = "email_verified")
+    private boolean emailVerified = false;
+
+    public void changeVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
 }

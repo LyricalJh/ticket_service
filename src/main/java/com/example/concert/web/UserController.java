@@ -2,6 +2,7 @@ package com.example.concert.web;
 
 import com.example.concert.common.ApiResponse;
 import com.example.concert.config.CustomUserDetails;
+import com.example.concert.service.EmailVerificationService;
 import com.example.concert.service.UserService;
 import com.example.concert.web.dto.UserDto;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/join")
     public ApiResponse<?> join(@RequestBody @Valid UserDto.CreateUserRequest user) {
@@ -42,6 +44,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("{\"error\":\"Invalid refresh token\"}");
         }
+    }
+
+    @GetMapping("/verify")
+    public ApiResponse<?> verifyEmail(@RequestParam String token) {
+        emailVerificationService.verifyEmail(token);
+        return ApiResponse.ok("이메일 인증이 완료되었습니다.");
     }
 
 }

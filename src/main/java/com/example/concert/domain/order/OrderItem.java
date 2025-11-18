@@ -22,6 +22,11 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 어떤 콘서트에 대한 티켓인가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "concert_id", nullable = false)
+    private Concert concert;
+
     // 어떤 주문에 속했는가
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -42,12 +47,20 @@ public class OrderItem {
         return OrderItem.builder()
                 .seat(seat)
                 .order(order)
+                .concert(concert)
                 .price(policy.calculatePrice(concert, seat))
                 .build();
     }
 
-    public static List<OrderItem> createAll(Order order, Concert concert, SeatPricingPolicy policy, List<Seat> seats) {
-        return seats.stream().map(seat -> create(order, concert, seat, policy)).collect(Collectors.toList());
+    public static List<OrderItem> createAll(
+            Order order,
+            Concert concert,
+            SeatPricingPolicy policy,
+            List<Seat> seats
+    ) {
+        return seats.stream()
+                .map(seat -> create(order, concert, seat, policy))
+                .collect(Collectors.toList());
     }
 
 }
