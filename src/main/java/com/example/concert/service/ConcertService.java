@@ -76,14 +76,14 @@ public class ConcertService {
     }
 
     @Transactional
-    public void updateConcert(ConcertDto.UpdateConcertRequest request) {
-        //TODO dirty check 방식으로 수정하는게 더 올바름
-        if (request == null) {
-            throw new IllegalArgumentException("존재하지 않는 콘서트입니다.");
-        }
+    public void updateConcert(Long concertId, ConcertDto.UpdateConcertRequest request) {
 
-        Concert savedConcert = concertRepository.save(ConcertMapper.ConcertUpdateToEntity(request));
-        concertCacheService.putConcert(ConcertMapper.toConcertResponseDto(savedConcert), Duration.ofMinutes(5));
+        Concert concert = concertRepository.findById(concertId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 콘서트입니다. id=" + concertId));
+
+        concert.updateEntityFromDto(request);
+
+        concertCacheService.putConcert(ConcertMapper.toConcertResponseDto(concert), Duration.ofMinutes(5));
     }
 
     @Transactional

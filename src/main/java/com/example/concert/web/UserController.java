@@ -30,10 +30,6 @@ public class UserController {
         return new ApiResponse<>(user.getEmail(), "환영합니다", HttpStatus.OK);
     }
 
-    @GetMapping("/admin")
-    public ApiResponse<?> admin(@AuthenticationPrincipal CustomUserDetails user) {
-        return ApiResponse.ok(user.getEmail(), "관리자 입장 허용");
-    }
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {

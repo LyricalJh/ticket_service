@@ -45,12 +45,19 @@ public class Order {
     public void addOrderItem(OrderItem item) {
         orderItems.add(item);
         item.changeOrder(this);
+        updateTotalAmount();
     }
 
     public void addOrderItems(List<OrderItem> items) {
         for (OrderItem item : items) {
             addOrderItem(item);
         }
+    }
+
+    public void updateTotalAmount() {
+        this.totalAmount = this.orderItems.stream()
+                .map(OrderItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public void markPaid(String pgTransactionId) {

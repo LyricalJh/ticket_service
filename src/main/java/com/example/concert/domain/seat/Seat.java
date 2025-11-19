@@ -1,6 +1,7 @@
 package com.example.concert.domain.seat;
 
 import com.example.concert.domain.concert.Concert;
+import com.example.concert.web.dto.SeatDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,5 +37,15 @@ public class Seat {
 
     public void changeStatus(SeatStatus status) {
         this.status = status;
+    }
+
+    public void updateEntityFromDto(SeatDto.UpdateSeatRequest request) {
+        this.seatNumber = request.getSeatNumber();
+        this.section = request.getSection();
+        this.grade = request.getGrade();
+
+        if (request.getStatus() != null) {
+            this.status = SeatStatus.valueOf(request.getStatus().toUpperCase());
+        }
     }
 }

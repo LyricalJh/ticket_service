@@ -2,6 +2,8 @@ package com.example.concert.consumer;
 
 
 import com.example.concert.cache.ReservationCacheService;
+import com.example.concert.domain.order.Order;
+import com.example.concert.domain.order.OrderRepository;
 import com.example.concert.service.payment.PaymentService;
 import com.example.concert.web.dto.OrderEvent;
 
@@ -20,6 +22,7 @@ public class OrderConsumer {
 
     private final ReservationCacheService reservationCacheService;
     private final Map<String, PaymentService> paymentServiceMap;
+    private final OrderRepository orderRepository;
 
     @KafkaListener(topics = "orders", groupId = "payment-service")
     public void consumeOrderEvent(OrderEvent event) {
@@ -33,6 +36,11 @@ public class OrderConsumer {
         try {
             paymentService.pay(event); // 결제 서비스 안에서 PaymentProducer 호출
             //TODO paymentService 결과에 따라 seat 상태를 변경해야함
+
+            Order order = orderRepository.findById(event.getOrderId())
+                    .orElseThrow(() -> new IllegalArgumentException("결재 정보가 존재하지 않습니다."));
+
+            order.markPaid(event.getPgTransactionId());
 
         } catch (Exception e) {
             log.error(e.getMessage());

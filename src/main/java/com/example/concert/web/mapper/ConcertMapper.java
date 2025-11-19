@@ -23,8 +23,9 @@ public class ConcertMapper {
                 .build();
     }
 
-    public static Concert ConcertUpdateToEntity(ConcertDto.UpdateConcertRequest request) {
+    public static Concert ConcertUpdateToEntity(Long concertId, ConcertDto.UpdateConcertRequest request) {
         return Concert.builder()
+                .concertId(concertId)
                 .title(request.getTitle())
                 .date(request.getDate())
                 .venue(request.getVenue())

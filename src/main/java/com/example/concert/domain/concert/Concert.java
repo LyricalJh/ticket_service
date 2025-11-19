@@ -1,6 +1,7 @@
 package com.example.concert.domain.concert;
 
 import com.example.concert.domain.seat.Seat;
+import com.example.concert.web.dto.ConcertDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -54,5 +55,16 @@ public class Concert {
 
     @Column(name = "create_at")
     private LocalDateTime createAt;
+
+    public void updateEntityFromDto(ConcertDto.UpdateConcertRequest request) {
+        this.title = request.getTitle();
+        this.date = request.getDate();
+        this.venue = request.getVenue();
+        this.basePrice = request.getBasePrice();
+        this.status = request.getStatus();
+        this.openAt = request.getOpenAt();
+        this.closeAt = request.getCloseAt();
+        this.updateAt = LocalDateTime.now();
+    }
 
 }
